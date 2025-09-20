@@ -323,13 +323,23 @@ def format_transcription_for_frontend_db(job: Job) -> dict:
 # -------------------------
 # Audio file utilities
 # -------------------------
-BASE_DIR = app.root_path
-UPLOAD_BASE = os.getenv("UPLOAD_DIR", os.path.join(BASE_DIR, "uploads"))
+# use /tmp when running in read-only environment (e.g. Vercel)
+DEFAULT_TMP_DIR = "/tmp"
+# Allow override via env if needed
+UPLOAD_BASE = os.getenv("UPLOAD_DIR") or os.path.join(DEFAULT_TMP_DIR, "uploads")
+
+# define subdirectories in tmp (or override)
 RAW_UPLOAD_DIR = os.path.join(UPLOAD_BASE, "raw")
 CONVERTED_DIR = os.path.join(UPLOAD_BASE, "converted")
 EXPORT_DIR = os.path.join(UPLOAD_BASE, "exports")
+
+# Create these directories safely, using only in tmp
 for d in (RAW_UPLOAD_DIR, CONVERTED_DIR, EXPORT_DIR):
-    os.makedirs(d, exist_ok=True)
+    try:
+        os.makedirs(d, exist_ok=True)
+    except OSError as e:
+        # If we cannot create because read-only, log and proceed (uploads will fail)
+        print(f"Warning: could not create directory {d}: {e}")
 
 DIRECT_EXTS = {".mp3", ".wav", ".ogg", ".flac", ".webm"}
 
