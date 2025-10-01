@@ -58,7 +58,7 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:////tmp/jobs.db")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", None)
 LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
-TRANSCRIBE_MODEL = os.getenv("TRANSCRIBE_MODEL", "whisper-large-v3")
+TRANSCRIBE_MODEL = os.getenv("TRANSCRIBE_MODEL", "whisper-large-v3-turbo")
 JWT_SECRET = os.getenv("JWT_SECRET")
 
 if not GROQ_API_KEY:
